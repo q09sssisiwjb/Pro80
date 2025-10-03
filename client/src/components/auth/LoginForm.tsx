@@ -22,7 +22,18 @@ export function LoginForm({ onSuccess, onSwitchToSignup }: LoginFormProps) {
     setLoading(true);
 
     try {
-      await signInWithEmail(email, password);
+      const user = await signInWithEmail(email, password);
+      
+      // Ensure user profile exists
+      await fetch('/api/auth/init-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.uid,
+          displayName: user.displayName || user.email?.split('@')[0],
+        }),
+      });
+      
       toast({
         title: "Login successful",
         description: "Welcome back!",
@@ -43,7 +54,18 @@ export function LoginForm({ onSuccess, onSwitchToSignup }: LoginFormProps) {
     setLoading(true);
 
     try {
-      await signInWithGoogle();
+      const user = await signInWithGoogle();
+      
+      // Ensure user profile exists
+      await fetch('/api/auth/init-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.uid,
+          displayName: user.displayName || user.email?.split('@')[0],
+        }),
+      });
+      
       toast({
         title: "Login successful",
         description: "Welcome back!",

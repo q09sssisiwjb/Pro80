@@ -23,7 +23,18 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
     setLoading(true);
 
     try {
-      await signUpWithEmailAndPassword(email, password, username);
+      const user = await signUpWithEmailAndPassword(email, password, username);
+      
+      // Initialize user profile in backend
+      await fetch('/api/auth/init-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.uid,
+          displayName: username,
+        }),
+      });
+      
       toast({
         title: "Account created",
         description: "Your account has been created successfully!",
@@ -44,7 +55,18 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
     setLoading(true);
 
     try {
-      await signUpWithGoogle();
+      const user = await signUpWithGoogle();
+      
+      // Initialize user profile in backend
+      await fetch('/api/auth/init-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.uid,
+          displayName: user.displayName || user.email?.split('@')[0],
+        }),
+      });
+      
       toast({
         title: "Account created",
         description: "Your account has been created successfully with Google!",
