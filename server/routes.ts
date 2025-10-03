@@ -486,6 +486,60 @@ Return only the enhanced prompt, nothing else.`;
     }
   });
 
+  // Initialize user profile on registration
+  app.post("/api/auth/init-profile", async (req, res) => {
+    try {
+      const { userId, displayName } = req.body;
+      
+      if (!userId) {
+        return res.status(400).json({ error: "User ID is required" });
+      }
+
+      // Check if profile already exists
+      const existingProfile = await storage.getUserProfileByUserId(userId);
+      
+      if (existingProfile) {
+        return res.json(existingProfile);
+      }
+
+      // Create new user profile with default settings
+      const profile = await storage.createUserProfile({
+        userId,
+        displayName: displayName || null,
+        bio: null,
+        location: null,
+        website: null,
+        phone: null,
+        company: null,
+        jobTitle: null,
+        language: 'en',
+        timezone: 'UTC',
+        dateFormat: 'MM/DD/YYYY',
+        timeFormat: '12h',
+        emailNotifications: true,
+        pushNotifications: true,
+        marketingEmails: false,
+        profileVisibility: 'public',
+        showEmail: false,
+        showLocation: true,
+        dataSharing: false,
+        defaultImageModel: 'gemini-2.5-flash',
+        defaultImageQuality: 'standard',
+        defaultImageSize: '1024x1024',
+        autoSaveGenerations: true,
+        twitterHandle: null,
+        instagramHandle: null,
+        linkedinUrl: null,
+        githubHandle: null,
+      });
+      
+      res.json(profile);
+    } catch (error) {
+      console.error('Error initializing user profile:', error);
+      res.status(500).json({ error: "Failed to initialize user profile" });
+    }
+  });
+
   // Custom Model endpoints
   app.post("/api/custom-models", async (req, res) => {
     try {
