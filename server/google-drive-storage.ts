@@ -341,6 +341,7 @@ export class GoogleDriveStorage implements IStorage {
       instagramHandle: insertProfile.instagramHandle || null,
       linkedinUrl: insertProfile.linkedinUrl || null,
       githubHandle: insertProfile.githubHandle || null,
+      isBanned: insertProfile.isBanned ?? false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

@@ -1,1 +1,1 @@
-Don't use your batabase use google Drive as database. con
+Don't use your batabase use google Drive as database. connect google Drive. 
