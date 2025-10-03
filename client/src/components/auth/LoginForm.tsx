@@ -25,7 +25,7 @@ export function LoginForm({ onSuccess, onSwitchToSignup }: LoginFormProps) {
       const user = await signInWithEmail(email, password);
       
       // Ensure user profile exists
-      await fetch('/api/auth/init-profile', {
+      const profileResponse = await fetch('/api/auth/init-profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -33,6 +33,10 @@ export function LoginForm({ onSuccess, onSwitchToSignup }: LoginFormProps) {
           displayName: user.displayName || user.email?.split('@')[0],
         }),
       });
+      
+      if (!profileResponse.ok) {
+        throw new Error('Failed to initialize user profile');
+      }
       
       toast({
         title: "Login successful",
@@ -57,7 +61,7 @@ export function LoginForm({ onSuccess, onSwitchToSignup }: LoginFormProps) {
       const user = await signInWithGoogle();
       
       // Ensure user profile exists
-      await fetch('/api/auth/init-profile', {
+      const profileResponse = await fetch('/api/auth/init-profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -65,6 +69,10 @@ export function LoginForm({ onSuccess, onSwitchToSignup }: LoginFormProps) {
           displayName: user.displayName || user.email?.split('@')[0],
         }),
       });
+      
+      if (!profileResponse.ok) {
+        throw new Error('Failed to initialize user profile');
+      }
       
       toast({
         title: "Login successful",

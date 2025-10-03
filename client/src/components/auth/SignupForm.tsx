@@ -26,7 +26,7 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
       const user = await signUpWithEmailAndPassword(email, password, username);
       
       // Initialize user profile in backend
-      await fetch('/api/auth/init-profile', {
+      const profileResponse = await fetch('/api/auth/init-profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -34,6 +34,10 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
           displayName: username,
         }),
       });
+      
+      if (!profileResponse.ok) {
+        throw new Error('Failed to create user profile');
+      }
       
       toast({
         title: "Account created",
@@ -58,7 +62,7 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
       const user = await signUpWithGoogle();
       
       // Initialize user profile in backend
-      await fetch('/api/auth/init-profile', {
+      const profileResponse = await fetch('/api/auth/init-profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -66,6 +70,10 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
           displayName: user.displayName || user.email?.split('@')[0],
         }),
       });
+      
+      if (!profileResponse.ok) {
+        throw new Error('Failed to create user profile');
+      }
       
       toast({
         title: "Account created",
